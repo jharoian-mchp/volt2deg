@@ -50,9 +50,9 @@ void PIN_MANAGER_Initialize()
     PORTC.OUT = 0x8;
 
   /* DIR Registers Initialization */
-    PORTA.DIR = 0xA;
+    PORTA.DIR = 0x0;
     PORTB.DIR = 0x0;
-    PORTC.DIR = 0x38;
+    PORTC.DIR = 0x3D;
 
   /* PINxCTRL registers Initialization */
     PORTA.PIN0CTRL = 0x0;
@@ -83,7 +83,7 @@ void PIN_MANAGER_Initialize()
   /* PORTMUX Initialization */
     PORTMUX.CCLROUTEA = 0x0;
     PORTMUX.EVSYSROUTEA = 0x0;
-    PORTMUX.SPIROUTEA = 0x0;
+    PORTMUX.SPIROUTEA = 0x1;
     PORTMUX.TCAROUTEA = 0x0;
     PORTMUX.TCBROUTEA = 0x0;
     PORTMUX.USARTROUTEA = 0x0;
@@ -177,19 +177,6 @@ void CS_7S2_DefaultInterruptHandler(void)
 }
 ISR(PORTA_PORT_vect)
 { 
-    // Call the interrupt handler for the callback registered at runtime
-    if(VPORTA.INTFLAGS & PORT_INT2_bm)
-    {
-       SPI_MISO_InterruptHandler(); 
-    }
-    if(VPORTA.INTFLAGS & PORT_INT1_bm)
-    {
-       SPI_MOSI_InterruptHandler(); 
-    }
-    if(VPORTA.INTFLAGS & PORT_INT3_bm)
-    {
-       SPI_SCK_InterruptHandler(); 
-    }
     /* Clear interrupt flags */
     VPORTA.INTFLAGS = 0xff;
 }
@@ -203,6 +190,18 @@ ISR(PORTB_PORT_vect)
 ISR(PORTC_PORT_vect)
 { 
     // Call the interrupt handler for the callback registered at runtime
+    if(VPORTC.INTFLAGS & PORT_INT1_bm)
+    {
+       SPI_MISO_InterruptHandler(); 
+    }
+    if(VPORTC.INTFLAGS & PORT_INT2_bm)
+    {
+       SPI_MOSI_InterruptHandler(); 
+    }
+    if(VPORTC.INTFLAGS & PORT_INT0_bm)
+    {
+       SPI_SCK_InterruptHandler(); 
+    }
     if(VPORTC.INTFLAGS & PORT_INT3_bm)
     {
        CS_AD_InterruptHandler(); 
