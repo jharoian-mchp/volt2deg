@@ -2,7 +2,7 @@
 
 manifest_file_version: 1.0.0
 project: My_MCC_Config
-creation_date: 2025-08-20T13:57:23.641-07:00[America/Los_Angeles]
+creation_date: 2025-08-20T14:29:12.388-07:00[America/Los_Angeles]
 operating_system: Linux
 mcc_mode: VSCodePlugin
 mcc_mode_version: Unknown
@@ -24,3 +24,4 @@ modules:
 - {name: '@mchp-mcc/pin-content-processor', type: MELODY, version: 3.10.0}
 - {name: '@mchp-mcc/scf-avr8-clkctrl-v2', type: MELODY, version: 3.2.16}
 - {name: '@mchp-mcc/scf-avr8-interrupt-v1', type: MELODY, version: 5.0.12}
+- {name: '@mchp-mcc/scf-avr8-spi-v1', type: MELODY, version: 5.1.0}

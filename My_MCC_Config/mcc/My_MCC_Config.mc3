@@ -102,6 +102,22 @@
          <hash>acecf8d74e3ab0b948d22b939feb5887c006d73bff970f37b9829e231be015c2</hash>
       </entry>
       <entry>
+         <file>mcc_generated_files/spi/spi0.h</file>
+         <hash>27f9f0bcd289dfeeb40b5ad5b0cbc27a4520fcccb1205b2bafe1792272288bcf</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/spi/spi_interface.h</file>
+         <hash>110edb2c873fe78cc19da22c55e714190e1daf41f2ff5390c3c9244779953754</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/spi/spi_interrupt_types.h</file>
+         <hash>ab0254505635fdecd5af68934ee70d440b8b1a5ceb4f2e2c5001b60368ed5ec0</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/spi/src/spi0.c</file>
+         <hash>81d390e3774e9e4d0ad9dd46ea8a7749e435e57ff4a95d3545d389d017728e4b</hash>
+      </entry>
+      <entry>
          <file>mcc_generated_files/system/ccp.h</file>
          <hash>3c854eec082d49740b327f4cf11a2f3125a158a354d660e8dfd31959eb93846a</hash>
       </entry>
@@ -115,7 +131,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files/system/pins.h</file>
-         <hash>1980fcd9001c445924a91ad00e1f199f77dddd330ad1bd4f795e28534cc3ab82</hash>
+         <hash>c47ef0a27679236308e2c77f2ab3d1f2dd5e96f05c7a44dc7d5bd47681165af4</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/system/port.h</file>
@@ -139,7 +155,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files/system/src/pins.c</file>
-         <hash>ea4a31c6540468f80349c7857350b6e245a43a1e968230fe5ad7a3fe657adadd</hash>
+         <hash>700ab935847219039e446a86fb7af46f4e780d9550d8f170e79d2bda8289e9ff</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/system/src/protected_io.S</file>
@@ -147,11 +163,11 @@
       </entry>
       <entry>
          <file>mcc_generated_files/system/src/system.c</file>
-         <hash>4f0f20c44e84ef8ae76db3247639620f77b4dadce3b25d9285cf110d97d77092</hash>
+         <hash>68cae739ae690fced6cefb3889c28736186899e384030bf606865f4e8f9a3339</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/system/system.h</file>
-         <hash>cc649d2301cf44fad09bcbc90fe3c5f0ef94abf9aa69b6d91f25c753648049ce</hash>
+         <hash>ffee1f5807d2fd7374f5a66034fd29053638c67e8c4ad511571cbf6d3317fc70</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/system/utils/assembler.h</file>

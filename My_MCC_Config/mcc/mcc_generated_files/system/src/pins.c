@@ -34,6 +34,12 @@
 
 #include "../pins.h"
 
+static void (*SPI_MISO_InterruptHandler)(void);
+static void (*SPI_MOSI_InterruptHandler)(void);
+static void (*SPI_SCK_InterruptHandler)(void);
+static void (*CS_AD_InterruptHandler)(void);
+static void (*CS_7S1_InterruptHandler)(void);
+static void (*CS_7S2_InterruptHandler)(void);
 
 void PIN_MANAGER_Initialize()
 {
@@ -41,12 +47,12 @@ void PIN_MANAGER_Initialize()
   /* OUT Registers Initialization */
     PORTA.OUT = 0x0;
     PORTB.OUT = 0x0;
-    PORTC.OUT = 0x0;
+    PORTC.OUT = 0x8;
 
   /* DIR Registers Initialization */
-    PORTA.DIR = 0x0;
+    PORTA.DIR = 0xA;
     PORTB.DIR = 0x0;
-    PORTC.DIR = 0x0;
+    PORTC.DIR = 0x38;
 
   /* PINxCTRL registers Initialization */
     PORTA.PIN0CTRL = 0x0;
@@ -83,10 +89,107 @@ void PIN_MANAGER_Initialize()
     PORTMUX.USARTROUTEA = 0x0;
 
   // register default ISC callback functions at runtime; use these methods to register a custom function
+    SPI_MISO_SetInterruptHandler(SPI_MISO_DefaultInterruptHandler);
+    SPI_MOSI_SetInterruptHandler(SPI_MOSI_DefaultInterruptHandler);
+    SPI_SCK_SetInterruptHandler(SPI_SCK_DefaultInterruptHandler);
+    CS_AD_SetInterruptHandler(CS_AD_DefaultInterruptHandler);
+    CS_7S1_SetInterruptHandler(CS_7S1_DefaultInterruptHandler);
+    CS_7S2_SetInterruptHandler(CS_7S2_DefaultInterruptHandler);
 }
 
+/**
+  Allows selecting an interrupt handler for SPI_MISO at application runtime
+*/
+void SPI_MISO_SetInterruptHandler(void (* interruptHandler)(void)) 
+{
+    SPI_MISO_InterruptHandler = interruptHandler;
+}
+
+void SPI_MISO_DefaultInterruptHandler(void)
+{
+    // add your SPI_MISO interrupt custom code
+    // or set custom function using SPI_MISO_SetInterruptHandler()
+}
+/**
+  Allows selecting an interrupt handler for SPI_MOSI at application runtime
+*/
+void SPI_MOSI_SetInterruptHandler(void (* interruptHandler)(void)) 
+{
+    SPI_MOSI_InterruptHandler = interruptHandler;
+}
+
+void SPI_MOSI_DefaultInterruptHandler(void)
+{
+    // add your SPI_MOSI interrupt custom code
+    // or set custom function using SPI_MOSI_SetInterruptHandler()
+}
+/**
+  Allows selecting an interrupt handler for SPI_SCK at application runtime
+*/
+void SPI_SCK_SetInterruptHandler(void (* interruptHandler)(void)) 
+{
+    SPI_SCK_InterruptHandler = interruptHandler;
+}
+
+void SPI_SCK_DefaultInterruptHandler(void)
+{
+    // add your SPI_SCK interrupt custom code
+    // or set custom function using SPI_SCK_SetInterruptHandler()
+}
+/**
+  Allows selecting an interrupt handler for CS_AD at application runtime
+*/
+void CS_AD_SetInterruptHandler(void (* interruptHandler)(void)) 
+{
+    CS_AD_InterruptHandler = interruptHandler;
+}
+
+void CS_AD_DefaultInterruptHandler(void)
+{
+    // add your CS_AD interrupt custom code
+    // or set custom function using CS_AD_SetInterruptHandler()
+}
+/**
+  Allows selecting an interrupt handler for CS_7S1 at application runtime
+*/
+void CS_7S1_SetInterruptHandler(void (* interruptHandler)(void)) 
+{
+    CS_7S1_InterruptHandler = interruptHandler;
+}
+
+void CS_7S1_DefaultInterruptHandler(void)
+{
+    // add your CS_7S1 interrupt custom code
+    // or set custom function using CS_7S1_SetInterruptHandler()
+}
+/**
+  Allows selecting an interrupt handler for CS_7S2 at application runtime
+*/
+void CS_7S2_SetInterruptHandler(void (* interruptHandler)(void)) 
+{
+    CS_7S2_InterruptHandler = interruptHandler;
+}
+
+void CS_7S2_DefaultInterruptHandler(void)
+{
+    // add your CS_7S2 interrupt custom code
+    // or set custom function using CS_7S2_SetInterruptHandler()
+}
 ISR(PORTA_PORT_vect)
 { 
+    // Call the interrupt handler for the callback registered at runtime
+    if(VPORTA.INTFLAGS & PORT_INT2_bm)
+    {
+       SPI_MISO_InterruptHandler(); 
+    }
+    if(VPORTA.INTFLAGS & PORT_INT1_bm)
+    {
+       SPI_MOSI_InterruptHandler(); 
+    }
+    if(VPORTA.INTFLAGS & PORT_INT3_bm)
+    {
+       SPI_SCK_InterruptHandler(); 
+    }
     /* Clear interrupt flags */
     VPORTA.INTFLAGS = 0xff;
 }
@@ -99,6 +202,19 @@ ISR(PORTB_PORT_vect)
 
 ISR(PORTC_PORT_vect)
 { 
+    // Call the interrupt handler for the callback registered at runtime
+    if(VPORTC.INTFLAGS & PORT_INT3_bm)
+    {
+       CS_AD_InterruptHandler(); 
+    }
+    if(VPORTC.INTFLAGS & PORT_INT4_bm)
+    {
+       CS_7S1_InterruptHandler(); 
+    }
+    if(VPORTC.INTFLAGS & PORT_INT5_bm)
+    {
+       CS_7S2_InterruptHandler(); 
+    }
     /* Clear interrupt flags */
     VPORTC.INTFLAGS = 0xff;
 }

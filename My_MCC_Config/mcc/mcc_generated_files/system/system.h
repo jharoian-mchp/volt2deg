@@ -48,6 +48,7 @@ extern "C" {
 #include "../system/pins.h"
 #include "../system/interrupt.h"
 #include "../system/clock.h"
+#include "../spi/spi0.h"
 /**
  * @ingroup systemdriver
  * @brief This initializes the system module  This routine is called only once during system initialization, before calling any other API.
