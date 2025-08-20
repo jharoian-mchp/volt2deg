@@ -37,7 +37,7 @@
 #include "../spi0.h"
 #include "../spi_interrupt_types.h"
 
-const struct SPI_INTERFACE SPI0_s = 
+const struct SPI_INTERFACE SPI0_Host = 
 {
     .Initialize = SPI0_Initialize,
     .Deinitialize = SPI0_Deinitialize,
@@ -69,6 +69,7 @@ static spi_descriptor_t spi0_descriptor =
 
 static const spi_configuration_t spi0_configuration[] = 
 {
+    { 0x27, 0xc5 },
     { 0x34, 0xC4 }
 };
 
