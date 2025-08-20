@@ -1,3 +1,7 @@
 **/.generated/
 _build/
 out/
+
+# Ignore local computer specific settings
+*.mplab-local.json
+
