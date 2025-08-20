@@ -4,9 +4,13 @@
  * @date 2025-08-20
  * @brief Main function
  */
-int main(){
+ #include "My_MCC_Config/mcc/mcc_generated_files/system/system.h"
 
-    // Add your code here and press Ctrl + Shift + B to build
-    while(1);
-    return 0;
-}
+  int main(void)
+ {
+     SYSTEM_Initialize();
+ 
+     while(1)
+     {
+     }    
+ }
