@@ -10,13 +10,13 @@
 
  int main(void)
  {
-     SYSTEM_Initialize();
+    SYSTEM_Initialize();
 
-     seven_seg_init();
+    seven_seg_init();
+    
+    seven_seg_clear();
 
-     seven_seg_clear();
-
-     seven_seg_display_digit(8);
+    //seven_seg_display_digit(8);
 
      while(1)
      {

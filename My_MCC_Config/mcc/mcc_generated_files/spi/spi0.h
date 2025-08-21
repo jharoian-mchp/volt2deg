@@ -44,91 +44,20 @@
  * @struct SPI_INTERFACE SPI0
  * @brief SPI driver interface object.
  */               
-extern const struct SPI_INTERFACE SPI0_Host;
+extern const struct SPI_INTERFACE SPI0_s;
 
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_Initialize API
- */
-#define SPI0_Host_Initialize SPI0_Initialize
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_Deinitialize API
- */
-#define SPI0_Host_Deinitialize SPI0_Deinitialize
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_Close API
- */
-#define SPI0_Host_Close SPI0_Close
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_Open API
- */
-#define SPI0_Host_Open SPI0_Open
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_ByteExchange API
- */
-#define SPI0_Host_ByteExchange SPI0_ByteExchange
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_Transfer API
- */
-#define SPI0_Host_Transfer SPI0_Transfer
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_BufferExchange API
- */
-#define SPI0_Host_BufferExchange SPI0_BufferExchange
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_BufferWrite API
- */
-#define SPI0_Host_BufferWrite SPI0_BufferWrite
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_BufferRead API
- */
-#define SPI0_Host_BufferRead SPI0_BufferRead
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_ByteWrite API
- */
-#define SPI0_Host_ByteWrite SPI0_ByteWrite
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_ByteRead API
- */
-#define SPI0_Host_ByteRead SPI0_ByteRead
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_IsRxReady API
- */
-#define SPI0_Host_IsRxReady SPI0_IsRxReady
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_IsTxReady API
- */
-#define SPI0_Host_IsTxReady SPI0_IsTxReady
-/**
- * @ingroup  spi0
- * @brief    This macro defines the Custom Name for \ref SPI0_CallbackRegister API
- */
-#define SPI0_Host_RxCompleteCallbackRegister SPI0_RxCompleteCallbackRegister
 
 /**
  * @ingroup spi0
- * @typedef enum SPI0_Host_configuration_name_t
+ * @typedef enum SPI0_configuration_name_t
  * @brief Enumeration for the different configurations supported by the driver. 
  * A configuration is specified as parameter to SPI0_Open()
  * and is used by the function to set SPI parameters as specified by the configuration.
  */
 typedef enum 
 {
-    HOST_CONFIG,
     SPI0_DEFAULT
-} SPI0_Host_configuration_name_t;
+} SPI0_configuration_name_t;
 
 /**
  * @ingroup spi0
@@ -243,12 +172,5 @@ bool SPI0_IsRxReady(void);
  */
 bool SPI0_IsTxReady(void);
 
-/**
- * @ingroup spi0
- * @brief Sets the callback function to be executed at the completion of data transfer in Interrupt mode.
- * @param Pointer to the function to be executed
- * @return None.
- */
-void SPI0_RxCompleteCallbackRegister(void (*callbackHandler)(void));
 
 #endif /* SPI0_H */

@@ -39,7 +39,11 @@ void seven_seg_display_digit(uint8_t digit)
 {
     if (digit <= 9) {
         uint8_t pattern = seven_seg_patterns[digit];
+        while(!SPI0_IsTxReady());
+        CS_7S1_SetLow();
         SPI0_ByteWrite(pattern);
+        while(!SPI0_IsTxReady());
+        CS_7S1_SetHigh();
     }
 }
 
@@ -69,7 +73,11 @@ void seven_seg_display_number(uint16_t number, uint8_t num_digits)
  */
 void seven_seg_clear(void)
 {
+    while(!SPI0_IsTxReady());
+    CS_7S1_SetLow();
     SPI0_ByteWrite(0x00);
+    while(!SPI0_IsTxReady());
+    CS_7S1_SetHigh();
 }
 
 

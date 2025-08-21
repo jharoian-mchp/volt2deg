@@ -1,13 +1,13 @@
 /**
- * Interrupt Manager Generated Driver File.
+ * SPI Type Definitions Header File
  *
- * @file interrupt.c
- * 
- * @ingroup interrupt 
- * 
- * @brief This file contains the API implementation for the Interrupt Manager.
- * 
- * @version Interrupt Manager Driver Version 1.0.0
+ * @file spi_polling_types.h
+ *
+ * @defgroup spi SPI
+ *
+ * @brief This header file provides type definitions for the SPI module operation in Polling mode.
+ *
+ * @version SPI Driver Version 3.1.0
 */
 
 /*
@@ -31,22 +31,19 @@
     THIS SOFTWARE.
 */
 
+#ifndef SPI_POLLING_TYPES_H
+#define	SPI_POLLING_TYPES_H
 
-#include "../interrupt.h"
 
-int8_t CPUINT_Initialize()
-{
-    /* IVSEL and CVT are Configuration Change Protected */
+/**
+ * @ingroup spi
+ * @typedef struct spi_configuration_t
+ * @brief Holds register configurations for SPI module.
+ */
+typedef struct 
+{  
+    uint8_t ctrla;
+    uint8_t ctrlb;
+} spi_configuration_t;
 
-    //CVT disabled; IVSEL disabled; LVL0RR disabled; 
-    ccp_write_io((void*)&(CPUINT.CTRLA),0x0);
-    
-    //LVL0PRI 0; 
-    CPUINT.LVL0PRI = 0x0;
-    
-    //LVL1VEC 0; 
-    CPUINT.LVL1VEC = 0x0;
-
-        
-    return 0;
-}
+#endif /* SPI_POLLING_TYPES_H */

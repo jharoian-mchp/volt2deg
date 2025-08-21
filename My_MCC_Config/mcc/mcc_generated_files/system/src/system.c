@@ -45,7 +45,7 @@ void SYSTEM_Initialize(void)
 {
     CLOCK_Initialize();
     PIN_MANAGER_Initialize();
-    SPI0_Host_Initialize();
+    SPI0_Initialize();
     CPUINT_Initialize();
 }
 

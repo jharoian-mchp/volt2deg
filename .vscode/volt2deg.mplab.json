@@ -71,7 +71,8 @@
                 "My_MCC_Config/mcc/mcc_generated_files/spi/src/spi0.c",
                 "My_MCC_Config/mcc/mcc_generated_files/spi/spi0.h",
                 "My_MCC_Config/mcc/mcc_generated_files/spi/spi_interface.h",
-                "My_MCC_Config/mcc/mcc_generated_files/spi/spi_interrupt_types.h"
+                "My_MCC_Config/mcc/mcc_generated_files/spi/spi_interrupt_types.h",
+                "My_MCC_Config/mcc/mcc_generated_files/spi/spi_polling_types.h"
             ]
         }
     ]

@@ -11,7 +11,6 @@
  *  
  * @version SPI0 Package Version 5.1.0
 */
-
 /*
 © [2025] Microchip Technology Inc. and its subsidiaries.
 
@@ -35,9 +34,9 @@
 
 
 #include "../spi0.h"
-#include "../spi_interrupt_types.h"
+#include "../spi_polling_types.h"
 
-const struct SPI_INTERFACE SPI0_Host = 
+const struct SPI_INTERFACE SPI0_s = 
 {
     .Initialize = SPI0_Initialize,
     .Deinitialize = SPI0_Deinitialize,
@@ -52,24 +51,12 @@ const struct SPI_INTERFACE SPI0_Host =
     .ByteRead = SPI0_ByteRead,
     .IsTxReady = SPI0_IsTxReady,
     .IsRxReady = SPI0_IsRxReady,
-    .RxCompleteCallbackRegister = SPI0_RxCompleteCallbackRegister,
+    .RxCompleteCallbackRegister = NULL,
     .TxCompleteCallbackRegister = NULL
 };
 
-static void (*SPI0_RxCompleteCallback)(void);
-void SPI0_ISR(void);
-
-static spi_descriptor_t spi0_descriptor = 
+static const spi_configuration_t spi0_configuration[] =
 {
-    .transmitBuffer = NULL,
-    .receiveBuffer = NULL,
-    .bufferLength = 0,
-    .status = SPI_RESET
-};
-
-static const spi_configuration_t spi0_configuration[] = 
-{
-    { 0x27, 0xc5 },
     { 0x34, 0xC4 }
 };
 
@@ -85,29 +72,22 @@ void SPI0_Initialize(void)
 				|(1 << SPI_BUFWR_bp)                /* BUFWR (enabled) */
 				|(SPI_MODE_0_gc)                    /* MODE (0) */
 				|(1 << SPI_SSD_bp);                 /* SSD (enabled) */
-    // Set Callback handler to NULL
-    SPI0_RxCompleteCallbackRegister(NULL);
-    spi0_descriptor.status = SPI_RESET;
 }
 
 void SPI0_Deinitialize(void)
 {
-
     SPI0.CTRLA = 0x0;
     SPI0.CTRLB = 0x0;
     SPI0.INTCTRL = 0x0;
-
-    spi0_descriptor.status = SPI_RESET;
 }
 
 bool SPI0_Open(uint8_t spiConfigIndex)
 {
     bool returnValue = false;
-    if (SPI_RESET == spi0_descriptor.status)
+    if (0 == (SPI0.CTRLA & SPI_ENABLE_bm)) 
     {
         SPI0.CTRLB = spi0_configuration[spiConfigIndex].ctrlb;
         SPI0.CTRLA = spi0_configuration[spiConfigIndex].ctrla;
-        spi0_descriptor.status = SPI_IDLE;
         SPI0.CTRLA |= SPI_ENABLE_bm;
         returnValue = true;
     } 
@@ -121,144 +101,115 @@ bool SPI0_Open(uint8_t spiConfigIndex)
 void SPI0_Close(void)
 {
     SPI0.CTRLA &= ~SPI_ENABLE_bm;
-    spi0_descriptor.status = SPI_RESET;    
-}
-
-void SPI0_RxCompleteCallbackRegister(void (* CallbackHandler)(void))
-{
-    SPI0_RxCompleteCallback = CallbackHandler;
 }
 
 uint8_t SPI0_ByteExchange(uint8_t byteData)
 {
-    while(SPI_IDLE != spi0_descriptor.status)
+    uint8_t readData = 0;
+    SPI0.DATA = byteData;
+    while (0 == (SPI0.INTFLAGS & SPI_RXCIF_bm))
     { 
         ; // Wait until ongoing SPI transfer is completed
     }
-    spi0_descriptor.transmitBuffer = (const uint8_t*)&byteData;
-    spi0_descriptor.receiveBuffer = (uint8_t*)&byteData;
-    spi0_descriptor.bufferLength = 0;
-    spi0_descriptor.transferType = SPI_READ;
-    spi0_descriptor.status = SPI_BUSY;
+    readData = SPI0.DATA;
+    return readData;
+}
 
-    SPI0.INTCTRL |= SPI_RXCIE_bm;
-    SPI0.DATA = *spi0_descriptor.transmitBuffer;
-    
-    while (SPI_BUSY == spi0_descriptor.status)
-    {
-        ; // Wait until ongoing SPI transfer is completed
-    }
-    return byteData;
+void SPI0_ByteWrite(uint8_t byteData)
+{
+    SPI0.DATA = byteData;
+}
+
+uint8_t SPI0_ByteRead(void)
+{
+    return SPI0.DATA;
 }
 
 void SPI0_Transfer(const void *txBuffer, void *rxBuffer, size_t bufferSize)
 {
-    if(SPI_IDLE == spi0_descriptor.status)
+    const uint8_t *bufferTransmit = (const uint8_t *)txBuffer;
+    uint8_t *bufferReceive = (uint8_t *)rxBuffer;
+	size_t bufferInputSize = bufferSize;
+    while(0U != bufferInputSize) 
     {
-        spi0_descriptor.transmitBuffer = (const uint8_t *)txBuffer;
-        spi0_descriptor.receiveBuffer = (uint8_t *)rxBuffer;
-        spi0_descriptor.bufferLength = bufferSize - (size_t)1;
-        spi0_descriptor.transferType = SPI_EXCHANGE;
-        spi0_descriptor.status = SPI_BUSY;
-
-        SPI0.INTCTRL |= SPI_RXCIE_bm;
-        SPI0.DATA = *spi0_descriptor.transmitBuffer;
-    }
-    else
-    {
-        ; // Exiting due to SPI transfer in progress
+        SPI0.DATA = *bufferTransmit;
+        while (0 == (SPI0.INTFLAGS & SPI_RXCIF_bm))
+        {
+            ; // Wait until ongoing SPI transfer is completed
+        }
+        *bufferReceive = SPI0.DATA;
+        bufferTransmit++;
+        bufferReceive++;  
+        bufferInputSize--;
     }
 }
 
 void SPI0_BufferExchange(void *bufferData, size_t bufferSize)
 {
-    if(SPI_IDLE == spi0_descriptor.status)
+    uint8_t *buffer = (uint8_t *)bufferData;
+	size_t bufferInputSize = bufferSize;
+    while(0U != bufferInputSize) 
     {
-        spi0_descriptor.transmitBuffer   = (const uint8_t *)bufferData;
-        spi0_descriptor.receiveBuffer   = (uint8_t *)bufferData;
-        spi0_descriptor.bufferLength   = bufferSize-(size_t)1;
-        spi0_descriptor.transferType   = SPI_EXCHANGE;
-        spi0_descriptor.status = SPI_BUSY;
-
-        SPI0.INTCTRL |= SPI_RXCIE_bm;
-        SPI0.DATA = *spi0_descriptor.transmitBuffer;
-    }
-    else
-    {
-        ; // Exiting due to SPI transfer in progress
+        SPI0.DATA = *buffer;
+        while (0 == (SPI0.INTFLAGS & SPI_RXCIF_bm))
+        {
+            ; // Wait until ongoing SPI transfer is completed
+        }
+        *buffer = SPI0.DATA;
+        buffer++;
+        bufferInputSize--;
     }
 }
 
 void SPI0_BufferWrite(void *bufferData, size_t bufferSize)
 {
-    if(SPI_IDLE == spi0_descriptor.status)
+    uint8_t *buffer = (uint8_t *)bufferData;
+    uint8_t  readData = 0;
+	size_t bufferInputSize = bufferSize;
+    while(0U != bufferInputSize) 
     {
-        spi0_descriptor.transmitBuffer   = (const uint8_t *)bufferData;
-        spi0_descriptor.receiveBuffer   = NULL;
-        spi0_descriptor.bufferLength   = bufferSize-(size_t)1;
-        spi0_descriptor.transferType   = SPI_WRITE;
-        spi0_descriptor.status = SPI_BUSY;
-
-        SPI0.INTCTRL |= SPI_RXCIE_bm;
-        SPI0.DATA = *spi0_descriptor.transmitBuffer;
-    }
-    else
-    {
-        ; // Exiting due to SPI transfer in progress 
+        SPI0.DATA = *buffer;
+        while(0 == (SPI0.INTFLAGS & SPI_RXCIF_bm))
+        {
+            ; // Wait until ongoing SPI transfer is completed
+        }        
+        readData = SPI0.DATA;
+        (void) readData;
+        buffer++;
+        bufferInputSize--;
     }
 }
 
 void SPI0_BufferRead(void *bufferData, size_t bufferSize)
 {
-    if(SPI_IDLE == spi0_descriptor.status)
+    uint8_t *buffer = (uint8_t *)bufferData;
+	size_t bufferInputSize = bufferSize;
+    while(0U != bufferInputSize) 
     {
-        spi0_descriptor.transmitBuffer   = NULL;
-        spi0_descriptor.receiveBuffer   = (uint8_t *)bufferData;
-        spi0_descriptor.bufferLength   = bufferSize-(size_t)1;
-        spi0_descriptor.transferType   = SPI_READ;
-        spi0_descriptor.status = SPI_BUSY;
-
-        SPI0.INTCTRL |= SPI_RXCIE_bm;
         SPI0.DATA = 0;
+        while (0 == (SPI0.INTFLAGS & SPI_RXCIF_bm))
+            {
+                ; // Wait until ongoing SPI transfer is completed
+            }
+        *buffer = SPI0.DATA;
+        buffer++;
+        bufferInputSize--;
     }
-    else
-    {
-        ; // Exiting due to SPI transfer in progress
-    }
-}
-
-void SPI0_ByteWrite(uint8_t byteData)
-{
-    if(SPI_IDLE == spi0_descriptor.status)
-    {
-        SPI0.DATA = byteData;
-    }
-    else
-    {
-        ;
-    }
-}
-
-uint8_t SPI0_ByteRead(void)
-{   
-    uint8_t readData = 0;
-    if(SPI_IDLE == spi0_descriptor.status)
-    {
-        readData = SPI0.DATA;
-    }
-    else
-    {
-        ;
-    } 
-    return readData;  
 }
 
 bool SPI0_IsTxReady(void)
 {
     bool returnValue = false;
-    if(SPI_IDLE == spi0_descriptor.status)
+    if(0 != (SPI0.CTRLA & SPI_ENABLE_bm))
     {
-        returnValue = true;
+        if(0 != (SPI0.INTFLAGS & SPI_DREIF_bm))
+        {
+            returnValue = true;
+        }
+        else
+        {
+           returnValue = false; 
+        }
     }
     else
     {
@@ -270,75 +221,20 @@ bool SPI0_IsTxReady(void)
 bool SPI0_IsRxReady(void)
 {
     bool returnValue = false;
-    if((SPI_IDLE == spi0_descriptor.status) && (0 != (SPI0.INTFLAGS & SPI_RXCIF_bm)))
+    if(0 != (SPI0.CTRLA & SPI_ENABLE_bm))
     {
-        returnValue = true;
+        if(0 != (SPI0.INTFLAGS & SPI_RXCIF_bm))
+        {
+            returnValue = true;
+        }
+        else
+        {
+           returnValue = false; 
+        }
     }
     else
     {
         returnValue = false;
     }
     return returnValue;
-}
-
-void SPI0_ISR(void)
-{
-    uint8_t readData = SPI0.DATA;
-    uint8_t writeData = 0;
-
-    // Clear interrupt flag
-    SPI0.INTFLAGS |= SPI_RXCIF_bm;
-
-    if((spi0_descriptor.bufferLength) > 0)
-    {
-        if (SPI_WRITE != spi0_descriptor.transferType) 
-        {
-            *spi0_descriptor.receiveBuffer = readData;
-        }
-        else
-        {
-            ; 
-        }
-        spi0_descriptor.transmitBuffer++;
-        spi0_descriptor.receiveBuffer++;
-
-        if (SPI_READ != spi0_descriptor.transferType)
-        {
-            writeData = *spi0_descriptor.transmitBuffer;
-        }
-        else
-        {
-            ;
-        }
-        spi0_descriptor.bufferLength--;
-        SPI0.DATA = writeData;
-    }
-    else
-    {
-        if ((SPI_WRITE != spi0_descriptor.transferType) && (SPI_BUSY == spi0_descriptor.status))
-        {
-            *spi0_descriptor.receiveBuffer = readData;
-        }
-        else
-        {
-            ;
-        }
-        spi0_descriptor.status = SPI_IDLE;
-        SPI0.INTCTRL &= ~SPI_RXCIE_bm;
-
-        if (SPI0_RxCompleteCallback != NULL)
-        {
-            SPI0_RxCompleteCallback();
-        }
-        else
-        {
-            ; // No transfer complete callback defined
-        }
-    }
-}
-
-/* cppcheck-suppress misra-c2012-8.2 */
-/* cppcheck-suppress misra-c2012-8.4 */
-ISR(SPI0_INT_vect){
-    SPI0_ISR();
 }
