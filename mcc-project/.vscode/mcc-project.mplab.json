@@ -1,0 +1,44 @@
+{
+    "version": "1.7",
+    "configurations": [
+        {
+            "name": "default",
+            "id": "conf1",
+            "device": "PIC32CM3204GV00064",
+            "imagePath": "./out/mcc-project/default.elf",
+            "packs": [
+                {
+                    "name": "PIC32CM-GV_DFP",
+                    "vendor": "Microchip",
+                    "version": "1.2.26"
+                },
+                {
+                    "name": "CMSIS",
+                    "vendor": "ARM",
+                    "version": "6.2.0"
+                }
+            ],
+            "fileSet": "default",
+            "toolchain": "default-XC32"
+        }
+    ],
+    "propertyGroups": [
+        {
+            "name": "default-XC32",
+            "type": "toolchain",
+            "provider": "microchip.toolchains:xc32@4.60",
+            "properties": {}
+        }
+    ],
+    "fileSets": [
+        {
+            "name": "default",
+            "files": [
+                {
+                    "include": "**/*",
+                    "exclude": "**/(_build|out|cmake|.vscode)/**/*"
+                }
+            ]
+        }
+    ]
+}
