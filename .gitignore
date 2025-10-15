@@ -1,7 +1,24 @@
+# .gitignore file
+#
+# Set up for Microchip/MPLAB Extensions for Visual Studio Code development
+#
+# John Haroian
+# Greg Mrozek
+#
+# Updated October 15, 2025
+
+# MPLAB Extensions (VSCode) specific
+
 **/.generated/
-_build/
-out/
+**/_build/
+**/out/
 
 # Ignore local computer specific settings
-*.mplab-local.json
+**/*.mplab-local.json
 
+# MCC specific
+**/*mc3.bak*
+**/*.bak*/
+
+# Large Files
+*.zip
