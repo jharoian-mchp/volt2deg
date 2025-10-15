@@ -14,33 +14,33 @@ Using the ATtiny3227 Curiosity Nano on the Curiosity Nano Base, three Click boar
 
 Located in mikroBus Socket 1, the MCP3204 is connected via the following pins:
 
-| Signal | ATtiny3227 pin | Nano Base Legend |
+| Signal | PIC32CM-GV pin | Nano Base Legend |
 | ------ | -------------- | ---------------- |
-| CS     | PC3            | CS1              |
-| SCK    | PC0            | SCK              |
-| DOUT   | PC1            | MISO             |
-| DIN    | PC2            | MOSI             |
+| CS     | PA02           | CS1              |
+| SCK    | PB03           | SCK              |
+| DOUT   | PB00           | MISO             |
+| DIN    | PB02           | MOSI             |
 
 ### 7seg Click #1
 
 Located in mikroBus Socket 2, the serial shift register is connected via the following pins:
 
-| Signal | ATtiny3227 pin | Nano Base Legend |
+| Signal | PIC32CM-GV pin | Nano Base Legend |
 | ------ | -------------- | ---------------- |
-| MR#    | N/C            | RST2             |
-| LATCH  | PC4            | CS2              |
-| SCK    | PC0            | SCK              |
-| SDO    | PC1            | MISO             |
-| SDI    | PC2            | MOSI             |
+| MR#    | PA11           | RST2             |
+| LATCH  | PB15           | CS2              |
+| SCK    | PB03           | SCK              |
+| SDO    | PB00           | MISO             |
+| SDI    | PB02           | MOSI             |
 
 ### 7seg Click #2
 
 Located in mikroBus Socket 3, the serial shift register is connected via the following pins:
 
-| Signal | ATtiny3227 pin | Nano Base Legend |
+| Signal | PIC32CM-GV pin | Nano Base Legend |
 | ------ | -------------- | ---------------- |
-| MR#    | N/C            | RST3             |
-| LATCH  | PC5            | CS3              |
-| SCK    | PC0            | SCK              |
-| SDO    | PC1            | MISO             |
-| SDI    | PC2            | MOSI             |
+| MR#    | PA19           | RST3             |
+| LATCH  | PB14           | CS3              |
+| SCK    | PB03           | SCK              |
+| SDO    | PB00           | MISO             |
+| SDI    | PB02           | MOSI             |
