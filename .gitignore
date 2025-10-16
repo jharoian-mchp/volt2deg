@@ -15,6 +15,7 @@
 
 # Ignore local computer specific settings
 **/*.mplab-local.json
+**/settings.json
 
 # MCC specific
 **/*mc3.bak*
